@@ -1,0 +1,65 @@
+<h3>{{editTitle}}</h3>
+<form clrForm #editForm="ngForm">
+
+  <clr-input-container>
+    <label>Name</label>
+    <input clrInput placeholder="User Name" type="text" [(ngModel)]="user.name" name="name" required/>
+    <clr-control-error *clrIfError="'required'">This field is required!</clr-control-error>
+  </clr-input-container>
+
+  <clr-input-container>
+    <label>Email</label>
+    <input clrInput placeholder="email@example.com" type="text" [(ngModel)]="user.email" name="email" email/>
+    <clr-control-error *clrIfError="'required'">Email is not valid</clr-control-error>
+  </clr-input-container>
+
+  <clr-select-container>
+    <label>Right</label>
+    <select clrSelect name="options" [(ngModel)]="user.rightTypeId" required>
+      <option *ngFor="let rightType of rightTypes" [value]="rightType.id">{{rightType.name}}</option>
+    </select>
+    <clr-control-error>This field is required!</clr-control-error>
+  </clr-select-container>
+
+  <clr-password-container>
+    <label>Password</label>
+    <input clrPassword placeholder="Password" [(ngModel)]="user.secret" name="secret" required minlength="5"/>
+    <clr-control-helper>
+      Must contain at least 5 characters with at least one of them a special character like !@#$%^&*)
+    </clr-control-helper>
+    <clr-control-error *clrIfError="'required'">This field is required!</clr-control-error>
+    <clr-control-error *clrIfError="'minlength'">It must be at least 5 characters!</clr-control-error>
+  </clr-password-container>
+
+  <clr-textarea-container>
+    <label>Comment</label>
+    <textarea clrTextarea [(ngModel)]="user.comment" name="comment"></textarea>
+  </clr-textarea-container>
+
+  <br>
+  <div><label class="clr-control-label">Create time</label>
+    <label>{{user.createdAt | date:"dd.MM.yyyy HH.mm.ss"}}</label></div>
+  <br>
+  <div><label class="clr-control-label">Update time</label>
+    <label>{{user.updatedAt | date:"dd.MM.yyyy HH.mm.ss"}}</label></div>
+
+  <div class="alert alert-danger" *ngIf="(this.errorMsg.length !== 0)">
+    <div class="alert-items">
+      <div class="alert-item static">
+        <div class="alert-icon-wrapper">
+          <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+        </div>
+        <span class="alert-text" [innerHtml]="errorMsg"></span>
+      </div>
+    </div>
+    <button type="button" class="close" aria-label="Close" (click)="this.errorMsg = ''">
+      <clr-icon aria-hidden="true" shape="close"></clr-icon>
+    </button>
+  </div>
+  <br>
+
+  <div class="btn-group btn-primary btn-sm">
+    <button class="btn " (click)="refresh()" *ngIf="!newUserMode">Refresh</button>
+    <button class="btn " (click)="save()" [disabled]="editForm.invalid">Save</button>
+  </div>
+</form>

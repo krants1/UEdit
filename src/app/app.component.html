@@ -1,0 +1,50 @@
+<div class="main-container">
+
+  <header class="header-2">
+    <div class="branding">
+      <a class="nav-icon">
+        <clr-icon shape="users"></clr-icon>
+        <span class="title">{{title}}</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="alert alert-app-level alert-warning" style="margin-bottom:24px" *ngIf="wsErrStatus">
+    <div class="alert-items">
+      <div class="alert-item static">
+        <div class="alert-icon-wrapper">
+          <clr-icon class="alert-icon" shape="exclamation-triangle"></clr-icon>
+        </div>
+        <div class="alert-text" [innerHtml]="wsReconnectText"></div>
+        <div class="alert-actions" *ngIf="wsComplete">
+          <button class="btn alert-action" (click)="reloadPage()">Reload</button>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="close" aria-label="Close">
+      <clr-icon aria-hidden="true" shape="close"></clr-icon>
+    </button>
+  </div>
+
+  <div class="content-container">
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+    <clr-vertical-nav [clrVerticalNavCollapsible]="true" class="nav-trigger--bottom">
+      <a clrVerticalNavLink routerLink="./" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <clr-icon clrVerticalNavIcon shape="home"></clr-icon>
+        Home</a>
+      <a clrVerticalNavLink routerLink="./users" routerLinkActive="active">
+        <clr-icon clrVerticalNavIcon shape="view-list"></clr-icon>
+        Users</a>
+      <a clrVerticalNavLink routerLink="./map" routerLinkActive="active">
+        <clr-icon clrVerticalNavIcon shape="map"></clr-icon>
+        Map</a>
+      <a clrVerticalNavLink routerLink="./about" routerLinkActive="active">
+        <clr-icon clrVerticalNavIcon shape="about"></clr-icon>
+        About</a>
+    </clr-vertical-nav>
+  </div>
+</div>
+
+
