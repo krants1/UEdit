@@ -1,7 +1,6 @@
-import {Component, Injectable, Input, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {WebsocketService} from './websocket/websocket.service';
-import {WS} from './websocket.events';
 import {SubscriptionLike} from 'rxjs';
 
 @Component({

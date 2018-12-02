@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ApiService} from '../api.service';
-import {ClrDatagridColumn, ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface} from '@clr/angular';
-import {ClrDatagridSortOrder} from '@clr/angular';
+
 import {User} from './user.model';
 import {Router} from '@angular/router';
 import {WebsocketService} from '../websocket/websocket.service';
@@ -23,7 +22,6 @@ export class UsersComponent implements OnInit, OnDestroy {
   eventAddUserSub: SubscriptionLike;
 //  timerShowLoading: NodeJS.Timer;
 
-  @ViewChildren(ClrDatagridColumn) columns: QueryList<ClrDatagridColumn>;
   constructor(private apiService: ApiService, private router: Router, private wsService: WebsocketService) {
   }
 
@@ -39,10 +37,12 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.wsService.getData<User[]>('users.get', {}, (data) => {
         if (fullRefresh) {
           this.users = [];
+          /*
           this.columns.forEach(column => {
             column.sortOrder = ClrDatagridSortOrder.UNSORTED;
             column.updateFilterValue = '';
           });
+          */
         }
         this.users = data;
         //  clearTimeout(this.timerShowLoading);

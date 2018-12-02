@@ -1,0 +1,49 @@
+.main-sidenav-content {
+  display: flex;
+  height: 100%;
+}
+
+.main-sidenav {
+  width: 200px;
+  height: 100%;
+}
+
+.main-content {
+  width: 100%;
+  margin: 15px;
+}
+
+.mat-sidenav-content {
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.mat-icon {
+  margin-right: 5px;
+}
+
+mat-toolbar img {
+  position: relative;
+  top: -2px;
+  width: 48px;
+  height: 48px;
+}
+
+.branding {
+  cursor: pointer;
+  overflow: hidden;
+  padding-top: 4px;
+  text-overflow: ellipsis;
+
+  &.center {
+    text-align: center;
+  }
+
+  img {
+    position: relative;
+    top: -2px;
+    width: 48px;
+    height: 48px;
+  }
+}
+

@@ -1,50 +1,130 @@
-<div class="main-container">
+<mat-sidenav-container>
 
-  <header class="header-2">
-    <div class="branding">
-      <a class="nav-icon">
-        <clr-icon shape="users"></clr-icon>
-        <span class="title">{{title}}</span>
+  <mat-sidenav #sidenav mode="push">
+    <div class="branding"><img [src]="logo"/>
+      <span data-testid="title">{{ title }}</span></div>
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()" [routerLink]="[item.link]"
+         routerLinkActive="active"> {{item.label }}
       </a>
-    </div>
-  </header>
+      <a mat-list-item href="https://github.com/tomastrajan/angular-ngrx-material-starter" target="_blank">
+        Github
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
 
-  <div class="alert alert-app-level alert-warning" style="margin-bottom:24px" *ngIf="wsErrStatus">
-    <div class="alert-items">
-      <div class="alert-item static">
-        <div class="alert-icon-wrapper">
-          <clr-icon class="alert-icon" shape="exclamation-triangle"></clr-icon>
-        </div>
-        <div class="alert-text" [innerHtml]="wsReconnectText"></div>
-        <div class="alert-actions" *ngIf="wsComplete">
-          <button class="btn alert-action" (click)="reloadPage()">Reload</button>
+  <div class="wrapper">
+
+    <div class="toolbar">
+      <mat-toolbar color="primary">
+        <button mat-icon-button class="d-md-none" (click)="sidenav.open()">
+          <fa-icon icon="bars"></fa-icon>
+        </button>
+
+        <span routerLink="" class="branding"><img [src]="logo" /> {{title}}</span>
+
+        <span class="d-none d-md-inline">
+            <button mat-button class="nav-button" *ngFor="let item of navigation" [routerLink]="[item.link]"
+                    routerLinkActive="active"> {{item.label}}
+            </button>
+          </span>
+
+        <button mat-icon-button routerLink="settings" class="d-none d-sm-inline">
+          <fa-icon icon="cog"></fa-icon>
+        </button>
+
+
+      </mat-toolbar>
+    </div>
+    <div class="content" [@routeAnimations]="o.isActivated && o.activatedRoute.routeConfig.path">
+      <router-outlet #o="outlet"></router-outlet>
+    </div>
+
+    <div class="footer">
+
+      <div class="row">
+        <div class="col-12">
+          &#169; <span>{{year}}</span> - UEdotor
         </div>
       </div>
     </div>
-    <button type="button" class="close" aria-label="Close">
-      <clr-icon aria-hidden="true" shape="close"></clr-icon>
-    </button>
+
   </div>
 
-  <div class="content-container">
-    <div class="content-area">
+</mat-sidenav-container>
+
+
+<div class="main-container container" *ngIf="false">
+
+  <mat-toolbar color="primary">
+
+    <img [src]="logo"/>
+    <span>{{title}}</span>
+
+  </mat-toolbar>
+
+  <div *ngIf="false">
+    <div class="alert alert-app-level alert-warning" style="margin-bottom:24px" *ngIf="wsErrStatus">
+      <div class="alert-items">
+        <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+            <!--  <clr-icon class="alert-icon" shape="exclamation-triangle"></clr-icon> -->
+          </div>
+          <div class="alert-text" [innerHtml]="wsReconnectText"></div>
+          <div class="alert-actions" *ngIf="wsComplete">
+            <button class="btn alert-action" (click)="reloadPage()">Reload</button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="close" aria-label="Close">
+        <!--  <clr-icon aria-hidden="true" shape="close"></clr-icon> -->
+      </button>
+    </div>
+  </div>
+
+  <mat-sidenav-container class="main-sidenav-container container" *ngIf="false">
+    <mat-sidenav opened mode="side" role="navigation" *ngIf="true">
+      <mat-nav-list>
+        <a mat-list-item routerLink='/'>
+          <mat-icon>home</mat-icon>
+          Home</a>
+        <a mat-list-item routerLink='/users'>
+          <mat-icon>people</mat-icon>
+          Users</a>
+        <a mat-list-item routerLink='/map'>
+          <mat-icon>map</mat-icon>
+          Map</a>
+        <a mat-list-item routerLink='/about'>
+          <mat-icon>public</mat-icon>
+          About</a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content role="main">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+  <div class="main-sidenav-content row">
+    <mat-nav-list class="main-sidenav">
+      <a mat-list-item routerLink='/'>
+        <mat-icon>home</mat-icon>
+        Home</a>
+      <a mat-list-item routerLink='/users'>
+        <mat-icon>people</mat-icon>
+        Users</a>
+      <a mat-list-item routerLink='/map'>
+        <mat-icon>map</mat-icon>
+        Map</a>
+      <a mat-list-item routerLink='/about'>
+        <mat-icon>public</mat-icon>
+        About</a>
+    </mat-nav-list>
+
+    <div class="main-content">
       <router-outlet></router-outlet>
     </div>
-    <clr-vertical-nav [clrVerticalNavCollapsible]="true" class="nav-trigger--bottom">
-      <a clrVerticalNavLink routerLink="./" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
-        <clr-icon clrVerticalNavIcon shape="home"></clr-icon>
-        Home</a>
-      <a clrVerticalNavLink routerLink="./users" routerLinkActive="active">
-        <clr-icon clrVerticalNavIcon shape="view-list"></clr-icon>
-        Users</a>
-      <a clrVerticalNavLink routerLink="./map" routerLinkActive="active">
-        <clr-icon clrVerticalNavIcon shape="map"></clr-icon>
-        Map</a>
-      <a clrVerticalNavLink routerLink="./about" routerLinkActive="active">
-        <clr-icon clrVerticalNavIcon shape="about"></clr-icon>
-        About</a>
-    </clr-vertical-nav>
   </div>
+
 </div>
 
 

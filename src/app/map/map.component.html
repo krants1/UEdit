@@ -1,21 +1,21 @@
 <div class="row">
-  <clr-select-container>
-    <label>Map</label>
-    <select clrSelect name="options" [(ngModel)]="selectMapKey" (change)="onMapChange()" required>
-      <option *ngFor="let m of mapsList" [value]="m.key">{{m.name}}</option>
-    </select>
-  </clr-select-container>
-  &nbsp;&nbsp;
-  <clr-select-container>
-    <label>Draw</label>
-    <select clrSelect name="options" [(ngModel)]="selectDrawKey" (change)="onDrawChange()" required>
-      <option *ngFor="let d of drawList" [value]="d.key">{{d.name}}</option>
-    </select>
-  </clr-select-container>
+
+  <mat-form-field>
+    <mat-select placeholder="Map" [(ngModel)]="selectMapKey" (selectionChange)="onMapChange($event)">
+      <mat-option *ngFor="let m of mapsList" [value]="m.key">{{m.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Draw" [(ngModel)]="selectDrawKey" (selectionChange)="onDrawChange()">
+      <mat-option>None</mat-option>
+      <mat-option *ngFor="let d of drawList" [value]="d.key">{{d.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
   &nbsp;&nbsp;
 </div>
 
-<br>
+
 <div id="map" class="map"></div>
 <br>
-<button class="btn btn-info-outline btn-sm" (click)="onDrawClear()">Clear</button>
+<button mat-raised-button (click)="onDrawClear()">Clear</button>

@@ -59,15 +59,15 @@ export class MapComponent implements OnInit {
 
   mapsList: { key: string, name: string }[] = [];
   drawList = [
-    {key: 'none', name: 'None'},
+    // {key: 'none', name: 'None'},
     {key: 'Point', name: 'Point'},
     {key: 'LineString', name: 'LineString'},
     {key: 'Polygon', name: 'Polygon'},
     {key: 'Circle', name: 'Circle'}
   ];
 
+  selectDrawKey = '';
   selectMapKey = 'osm';
-  selectDrawKey = 'none';
 
   constructor(private http: HttpClient) {
   }
@@ -243,9 +243,9 @@ export class MapComponent implements OnInit {
     this.addInteractions();
   }
 
-  onMapChange() {
+  onMapChange($event) {
     this.layers.forEach((layer) => {
-      if (layer.get('tag') === this.selectMapKey) {
+      if (layer.get('tag') === $event.value) {
         layer.setVisible(true);
       } else {
         if (layer.type === 'TILE') {
@@ -257,6 +257,6 @@ export class MapComponent implements OnInit {
 
   onDrawClear() {
     this.vectorSource.clear();
-    this.selectDrawKey = 'none';
+    this.selectDrawKey = '';
   }
 }
