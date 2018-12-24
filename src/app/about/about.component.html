@@ -1,0 +1,37 @@
+<div class="container-fluid">
+  <h3>About Page</h3>
+  <mat-divider></mat-divider>
+  <mat-list dense>
+    <h3 mat-subheader>WS Server</h3>
+    <mat-list-item>
+      <p>
+        <span>{{wsUrl}}</span>
+      </p>
+    </mat-list-item>
+    <mat-list-item>
+      <p>
+        <span matBadge="{{ wsConnections$ | async  }}" matBadgeOverlap="false">Connections</span>
+      </p>
+    </mat-list-item>
+    <mat-list-item>
+      <p>
+        <span matBadge="{{ wsMessagesIncomingCount$ | async  }}" matBadgeOverlap="false">Incoming messages</span>
+      </p>
+    </mat-list-item>
+    <mat-list-item>
+      <p>
+        <span matBadge="{{ wsMessagesOutcomingCount$ | async  }}" matBadgeOverlap="false">Outcoming messages</span>
+      </p>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-list>
+  <mat-list dense>
+    <h3 mat-subheader>HTTP Server</h3>
+    <mat-list-item>
+      <p>
+        <span>{{httpUrl}}</span>
+      </p>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-list>
+</div>

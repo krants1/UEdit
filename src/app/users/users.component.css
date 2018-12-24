@@ -1,0 +1,26 @@
+table {
+  width: 100%;
+}
+
+.mat-column-id {
+  max-width: 64px;
+}
+
+.mat-column-name,
+.mat-column-rightType-name,
+.mat-column-email {
+  max-width: 128px;
+}
+
+.mat-column-comment {
+  max-width: 300px;
+}
+
+.table-rate-limit-reached {
+  color: #980000;
+  text-align: center;
+}
+
+.mat-slide-toggle.run-time {
+  margin-top: 25px;
+}

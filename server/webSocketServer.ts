@@ -1,6 +1,8 @@
 import * as WebSocket from 'ws';
 import {Observable, Subject} from 'rxjs';
-import {filter, map} from 'rxjs/operators';
+import {filter} from 'rxjs/operators';
+import * as http from 'http';
+import {HTTPServer} from './httpServer';
 
 class WsMessage {
   conn: any;
@@ -8,37 +10,23 @@ class WsMessage {
   data: any;
 }
 
-export abstract class WebSocketRouter {
-  protected ownerWSServer: WebSocketServer;
-  constructor(wsServer: WebSocketServer) {
-    this.ownerWSServer = wsServer;
-    this.init();
-  }
-  abstract init();
-}
-
-class ServerWSServerRouter extends WebSocketRouter {
-  init() {
-    this.ownerWSServer.on('connections')
-        .subscribe(value => this.ownerWSServer.send(value.conn, 'connections', this.ownerWSServer.wsServer.clients.size));
-  }
-}
-
 export class WebSocketServer {
   public wsServer: WebSocket.Server;
-  private router: ServerWSServerRouter;
-  private wsMessages$: Subject<WsMessage>;
-  constructor(private port: number) {
-    this.wsMessages$ = new Subject<WsMessage>();
-    this.wsServer = new WebSocket.Server({port: port});
-    this.router = new ServerWSServerRouter(this);
+  public routes: Array<WebSocketRouter> = [];
+  private message$: Subject<WsMessage>;
+  private httpServer = http.createServer();
+  constructor(private appHTTPServer: HTTPServer) {
+    this.message$ = new Subject<WsMessage>();
+    this.wsServer = new WebSocket.Server({server: this.httpServer});
+    this.httpServer.on('request', appHTTPServer.express);
+    this.routes.push(new ServerWSServerRouter(this));
     this.init();
   }
 
   public on(event: string): Observable<WsMessage> {
-    console.log('on', event);
+    console.log('ws on:', event);
     if (event) {
-      return this.wsMessages$.pipe(
+      return this.message$.pipe(
         filter((message: WsMessage) => message.event === event)
       );
     }
@@ -77,9 +65,11 @@ export class WebSocketServer {
     });
 
     // listening
+    /*
     this.wsServer.on('listening', () => {
-      console.log('WebSocket listen port:', this.port);
+      console.log('WebSocket listen port:', this.appHTTPServer.port);
     });
+    */
 
     // connection
     this.wsServer.on('connection', (conn, req) => {
@@ -94,7 +84,7 @@ export class WebSocketServer {
         console.log('message', msg);
         const wsMessage: WsMessage = JSON.parse(JSON.parse(msg));
         wsMessage.conn = conn;
-        this.wsMessages$.next(wsMessage);
+        this.message$.next(wsMessage);
       });
 
       // ping
@@ -116,6 +106,27 @@ export class WebSocketServer {
       });
 
     });
+
+    // start listen ws via http server
+    this.httpServer.listen(this.appHTTPServer.port, function () {
+      console.log(`ws/http server start listening`);
+    });
   }
 
+}
+
+export abstract class WebSocketRouter {
+  protected ownerWSServer: WebSocketServer;
+  constructor(wsServer: WebSocketServer) {
+    this.ownerWSServer = wsServer;
+    this.init();
+  }
+  abstract init();
+}
+
+class ServerWSServerRouter extends WebSocketRouter {
+  init() {
+    this.ownerWSServer.on('connections')
+        .subscribe(value => this.ownerWSServer.send(value.conn, 'connections', this.ownerWSServer.wsServer.clients.size));
+  }
 }

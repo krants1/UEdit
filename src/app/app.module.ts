@@ -1,62 +1,37 @@
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgModule} from '@angular/core';
+
+import {SharedModule} from '@app/shared';
+import {CoreModule} from '@app/core';
+
+import {CoreSettingsModule} from './core/settings/core-settings.module';
 import {AppComponent} from './app.component';
-import {HttpClientModule} from '@angular/common/http';
-import {RouterModule, Routes} from '@angular/router';
+import {RouterModule} from '@angular/router';
 
-// import {UsersComponent} from './users/users.component';
-// import {EditUserComponent} from './users/edit-user.component';
-import {AboutComponent} from './about.component';
-import {NotFoundComponent} from './not-found.component';
-import {HomeComponent} from './home.component';
-import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatCheckboxModule} from '@angular/material';
-import {MatToolbarModule, MatSidenavModule} from '@angular/material';
-import {
-  MatMenuModule, MatIconModule,
-  MatCardModule, MatFormFieldModule,
-  MatInputModule, MatTooltipModule,
-  MatListModule, MatBadgeModule,
-  MatOptionModule, MatSelectModule
-} from '@angular/material';
-
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
-import {WebsocketModule} from './websocket/websocket.module';
-import {MapComponent} from './map/map.component';
-
-const appRoutes: Routes = [
-  {path: '', component: HomeComponent},
-  {path: 'about', component: AboutComponent},
- // {path: 'users', component: UsersComponent},
-  // {path: 'user/:id', component: EditUserComponent},
-  // {path: 'user', component: EditUserComponent},
-  {path: 'map', component: MapComponent},
-  {path: '**', component: NotFoundComponent}
-];
+import {AppComponents, AppEntryComponents, AppModules, AppRoutes, AppServices} from './app.routes';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    // UsersComponent, EditUserComponent,
-    AboutComponent, NotFoundComponent, HomeComponent, MapComponent
-  ],
   imports: [
-    FormsModule, ReactiveFormsModule,
-    BrowserAnimationsModule, NoopAnimationsModule,
-    MatButtonModule, MatCheckboxModule,
-    MatToolbarModule, MatSidenavModule,
-    MatMenuModule, MatIconModule,
-    MatCardModule, MatFormFieldModule,
-    MatInputModule, MatTooltipModule,
-    MatListModule, MatBadgeModule,
-    MatOptionModule, MatSelectModule,
-    BrowserModule, HttpClientModule,
-    RouterModule.forRoot(appRoutes),
-    WebsocketModule, FontAwesomeModule
+    // angular
+    BrowserAnimationsModule,
+    BrowserModule,
+
+    // core & shared
+    CoreModule,
+    SharedModule,
+    CoreSettingsModule,
+
+    // app
+    ...AppModules,
+    RouterModule.forRoot(AppRoutes, {
+      scrollPositionRestoration: 'enabled'
+    })
   ],
-  providers: [],
+  entryComponents: [...AppEntryComponents],
+  declarations: [AppComponent, ...AppComponents],
+  providers: [...AppServices],
+  exports: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

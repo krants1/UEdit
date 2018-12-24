@@ -1,57 +1,23 @@
-<h3>Users List</h3>
+<nav mat-tab-nav-bar class="d-none d-sm-flex">
+  <a mat-tab-link
+     *ngFor="let l of links"
+     [routerLink]="l.link"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    {{l.label | translate}}
+  </a>
+</nav>
 
-<div *ngIf="false">
-<clr-datagrid class="datagrid-compact" [clrDgLoading]="loading">
-  <clr-dg-placeholder>We couldn't find any users!</clr-dg-placeholder>
-  <clr-dg-column clrDgField="id">
-    <ng-container *clrDgHideableColumn="{hidden: false}">Id</ng-container>
-  </clr-dg-column>
-  <clr-dg-column clrDgField="name">
-    <ng-container *clrDgHideableColumn="{hidden: false}">Name</ng-container>
-  </clr-dg-column>
-  <clr-dg-column clrDgField="rightType.name">
-    <ng-container *clrDgHideableColumn="{hidden: false}">Right Type</ng-container>
-  </clr-dg-column>
-  <clr-dg-column clrDgField="email">
-    <ng-container *clrDgHideableColumn="{hidden: false}">Email</ng-container>
-  </clr-dg-column>
-  <clr-dg-column clrDgField="comment">
-    <ng-container *clrDgHideableColumn="{hidden: false}">Comment</ng-container>
-  </clr-dg-column>
-  <clr-dg-column clrDgField="create">
-    <ng-container *clrDgHideableColumn="{hidden: false}">Create</ng-container>
-  </clr-dg-column>
-  <clr-dg-row *clrDgItems="let user of users" [clrDgItem]="user">
-    <clr-dg-action-overflow>
-      <button class="action-item" (click)="onEdit(user)">Edit</button>
-      <button class="action-item" (click)="onConfirmDelete(user)">Delete</button>
-    </clr-dg-action-overflow>
-    <clr-dg-cell>{{user.id}}</clr-dg-cell>
-    <clr-dg-cell>{{user.name}}</clr-dg-cell>
-    <clr-dg-cell>{{user.rightType.name}}</clr-dg-cell>
-    <clr-dg-cell>{{user.email}}</clr-dg-cell>
-    <clr-dg-cell>{{user.comment}}</clr-dg-cell>
-    <clr-dg-cell>{{user.createdAt | date}}</clr-dg-cell>
-  </clr-dg-row>
-  <clr-dg-footer>
-    <clr-dg-pagination #pagination [clrDgPageSize]="20">
-      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-      of {{pagination.totalItems}} users
-    </clr-dg-pagination>
-  </clr-dg-footer>
-</clr-datagrid>
+<nav class="nav-responsive d-sm-none d-flex justify-content-center">
+  <mat-select [placeholder]="'app.menu.users' | translate" [value]="'todos'">
+    <mat-option *ngFor="let l of links"
+                [value]="l"
+                [routerLink]="l.link">
+      {{l.label | translate}}
+    </mat-option>
+  </mat-select>
+</nav>
 
-<div class="btn-group btn-primary btn-sm">
-  <button class="btn " (click)="gridRefresh()">Refresh</button>
-  <button class="btn btn-success " (click)="addUser()">Add user</button>
-</div>
-
-<clr-modal [(clrModalOpen)]="modalDeleteUser" [clrModalSize]="'sm'">
-  <h3 class="modal-title">Remove {{editUser.name}}</h3>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="modalDeleteUser=false">Cancel</button>
-    <button type="button" class="btn btn-warning" (click)="modalDeleteUser=false;onDelete(editUser)">Delete</button>
-  </div>
-</clr-modal>
-
+<div>
+  <router-outlet #o="outlet"></router-outlet>
 </div>

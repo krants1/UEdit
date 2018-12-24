@@ -1,0 +1,40 @@
+<div class="container-fluid">
+  <div class="users-cards">
+    <app-loading-process [isLoading]="isDataLoading"></app-loading-process>
+    <div infiniteScroll
+         [infiniteScrollDistance]="2"
+         [infiniteScrollThrottle]="30"
+         [infiniteScrollContainer]="'.users-cards'"
+         [fromRoot]="true"
+         (scrolled)="onFetch()">
+      <div class="row" style="padding-right: 15px">
+        <div class="col-sm-12 col-md-6 col-lg-4" *ngFor="let user of users">
+          <mat-card class="user-card mat-elevation-z6 ">
+            <mat-card-header>
+              <div mat-card-avatar>
+                <mat-icon>face</mat-icon>
+              </div>
+              <mat-card-title>{{ user.name }}</mat-card-title>
+              <mat-card-subtitle>{{ user.email}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>
+                {{ user.comment}}
+              </p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-icon-button color="accent" (click)="onThumbsUpClick(user)">
+                <fa-icon icon="thumbs-up" class="fa-lg"></fa-icon>
+              </button>
+
+              <button mat-icon-button color="warn" (click)="onThumbsDownClick(user)">
+                <fa-icon icon="thumbs-down" class="fa-lg"></fa-icon>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

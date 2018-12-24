@@ -1,0 +1,16 @@
+.users-cards {
+  height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 10px;
+}
+
+.mat-card-avatar .mat-icon {
+  font-size: 50px;
+
+}
+
+.mat-card {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

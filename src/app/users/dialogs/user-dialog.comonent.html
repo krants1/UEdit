@@ -1,0 +1,37 @@
+<h3>{{editTitle}}</h3>
+<form #editForm="ngForm" class="dialog-container">
+  <mat-form-field>
+    <input matInput placeholder="Name" [(ngModel)]="user.name" name="name" #name="ngModel"
+           required>
+    <mat-error *ngIf="name.invalid">This field is required!</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Email" [(ngModel)]="user.email" name="email" #email="ngModel"
+           required email>
+    <mat-error *ngIf="email.invalid">Not a valid email!</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Right" name="options" [(ngModel)]="user.rightTypeId" required>
+      <mat-option *ngFor="let rightType of rightTypes" [value]="rightType.id">{{rightType.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Password" [(ngModel)]="user.secret" name="secret" #secret="ngModel"
+           required minlength="5"
+           [type]="passHide ? 'password' : 'text'">
+    <mat-icon matSuffix (click)="passHide = !passHide">{{passHide ? 'visibility_off' : 'visibility'}}</mat-icon>
+    <mat-error *ngIf="secret.invalid">It must be at least 5 characters!</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <textarea matInput placeholder="Comment" [(ngModel)]="user.comment" name="comment"></textarea>
+  </mat-form-field>
+
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="user" [disabled]="editForm.invalid">Save</button>
+    <button mat-button [mat-dialog-close]>Cancel</button>
+  </div>
+</form>

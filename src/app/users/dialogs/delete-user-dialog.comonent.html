@@ -1,0 +1,16 @@
+<div class="container">
+  <h3 mat-dialog-title>Delete user?</h3>
+  <div mat-dialog-content>
+    Id: {{user.id}}
+    <p></p>
+    Name: {{user.name}}
+    <p></p>
+    Email: {{user.email}}
+    <p></p>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="user.id">Delete</button>
+    <button mat-button [mat-dialog-close]>Cancel</button>
+  </div>
+</div>

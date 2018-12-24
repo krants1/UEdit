@@ -1,23 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
-import Map from 'ol/Map';
-import View from 'ol/View';
-import Feature from 'ol/Feature.js';
-import OSM from 'ol/source/OSM';
-import BingMaps from 'ol/source/BingMaps';
-import GeoJSON from 'ol/format/GeoJSON.js';
-import Polyline from 'ol/format/Polyline.js';
-import {fromLonLat, transform} from 'ol/proj';
-import {ScaleLine} from 'ol/control.js';
-import MousePosition from 'ol/control/MousePosition.js';
-import {createStringXY, toStringXY, format} from 'ol/coordinate.js';
-import {Vector as VectorSource} from 'ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style.js';
-import {Draw, Modify, Snap} from 'ol/interaction.js';
-import XYZ from 'ol/source/XYZ.js';
-import {FullScreen} from 'ol/control.js';
+import * as ol from './ol.index';
+
 import {HttpClient} from '@angular/common/http';
+
 
 type Coordinate = number[];
 
@@ -32,15 +18,15 @@ interface RouteResponse {
 })
 
 export class MapComponent implements OnInit {
-  map: Map;
-  layers: TileLayer[] = [];
-  vectorSource: VectorSource;
+  map: ol.Map;
+  layers: ol.TileLayer[] = [];
+  vectorSource: ol.VectorSource;
   mapEPSG = '';
 
   path: Coordinate[] = [];
 
-  intrDraw: Draw;
-  intrSnap: Snap;
+  intrDraw: ol.Draw;
+  intrSnap: ol.Snap;
 
   bingMaps = [
     {key: 'Road', name: 'Road (static)'},
@@ -74,19 +60,19 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
 
-    this.layers.push(new TileLayer({
+    this.layers.push(new ol.TileLayer({
       tag: 'osm',
       visible: true,
-      source: new OSM()
+      source: new ol.OSM()
     }));
     this.mapsList.push({key: 'osm', name: 'OSM'});
 
     const mabBoxAccessToken = 'pk.eyJ1IjoibXNsZWUiLCJhIjoiclpiTWV5SSJ9.P_h8r37vD8jpIH1A6i1VRg';
     this.mapboxMaps.forEach(m => {
-      this.layers.push(new TileLayer({
+      this.layers.push(new ol.TileLayer({
         tag: 'mapbox_' + m.key,
         visible: false,
-        source: new XYZ({
+        source: new ol.XYZ({
           attributions: 'Tiles © USGS, rendered with <a href="http://www.maptiler.com/">MapTiler</a>',
           url: 'https://api.mapbox.com/v4/mapbox.' + m.key + '/{z}/{x}/{y}@2x.png?access_token=' + mabBoxAccessToken
         })
@@ -96,11 +82,11 @@ export class MapComponent implements OnInit {
 
     this.bingMaps.forEach(m => {
         this.layers.push(
-          new TileLayer({
+          new ol.TileLayer({
             tag: 'bind_' + m.key,
             visible: false,
             preload: Infinity,
-            source: new BingMaps({
+            source: new ol.BingMaps({
               hidpi: true, imagerySet: m.key,
               key: 'AqCF8GCX4vEuPnF5OrU0D9uAQY-OspWzfphcidW7z4VifdubRVZZHPnCa-FzdVf-'
             })
@@ -109,37 +95,37 @@ export class MapComponent implements OnInit {
       }
     );
 
-    this.vectorSource = new VectorSource();
-    this.layers.push(new VectorLayer({
+    this.vectorSource = new ol.VectorSource();
+    this.layers.push(new ol.VectorLayer({
       source: this.vectorSource,
-      style: new Style({
+      style: new ol.Style({
 
-        route: new Style({
-          stroke: new Stroke({
+        route: new ol.Style({
+          stroke: new ol.Stroke({
             width: 6, color: [237, 212, 0, 0.8]
           })
         }),
-        fill: new Fill({
+        fill: new ol.Fill({
           color: 'rgba(255, 255, 255, 0.2)'
         }),
-        stroke: new Stroke({
+        stroke: new ol.Stroke({
           color: 'green',
           width: 2
         }),
-        image: new CircleStyle({
+        image: new ol.CircleStyle({
           radius: 7,
-          fill: new Fill({
+          fill: new ol.Fill({
             color: '#ffcc33'
           })
         })
       })
     }));
 
-    this.map = new Map({
+    this.map = new ol.Map({
       layers: this.layers,
       target: 'map',
-      view: new View({
-        center: fromLonLat([30.54, 50.45]),
+      view: new ol.View({
+        center: ol.fromLonLat([30.54, 50.45]),
         zoom: 12,
         minZoom: 2
       })
@@ -148,25 +134,25 @@ export class MapComponent implements OnInit {
     console.log('map projection: ', this.map.values_.view.projection_.code_);
     this.mapEPSG = this.map.values_.view.projection_.code_;
 
-    this.map.addControl(new ScaleLine({units: 'metric'}));
-    this.map.addControl(new MousePosition({
-      coordinateFormat: createStringXY(2),
+    this.map.addControl(new ol.ScaleLine({units: 'metric'}));
+    this.map.addControl(new ol.MousePosition({
+      coordinateFormat: ol.createStringXY(2),
       projection: 'EPSG:4326',
       undefinedHTML: '&nbsp;'
     }));
-    this.map.addControl(new FullScreen());
-    this.map.addInteraction(new Modify({source: this.vectorSource}));
+    this.map.addControl(new ol.FullScreen());
+    this.map.addInteraction(new ol.Modify({source: this.vectorSource}));
     this.map.on('singleclick', (e) => this.onMapSingleClick(e));
   }
 
   onMapSingleClick(event) {
-    if (this.selectDrawKey !== 'none') {
+    if (this.selectDrawKey !== '') {
       return;
     }
     if (event.pointerEvent.ctrlKey) {
       console.log(event.pointerEvent.ctrlKey);
     }
-    const lonlat: Coordinate = transform(event.coordinate, this.mapEPSG, 'EPSG:4326');
+    const lonlat: Coordinate = ol.transform(event.coordinate, this.mapEPSG, 'EPSG:4326');
 
     if (this.path.length === 2) {
       this.path = [];
@@ -177,8 +163,8 @@ export class MapComponent implements OnInit {
       // let url = `http://${window.location.hostname}:5000/`;
       let url = 'https://router.project-osrm.org/';
       url += 'route/v1/driving/';
-      url += format(this.path[0], '{x},{y}', 6) + ';';
-      url += format(this.path[1], '{x},{y}', 6);
+      url += ol.format(this.path[0], '{x},{y}', 6) + ';';
+      url += ol.format(this.path[1], '{x},{y}', 6);
       url += '?geometries=geojson&overview=full';
       // console.log(url);
       for (let i = 0; i < 1; i++) {
@@ -196,7 +182,7 @@ export class MapComponent implements OnInit {
   }
   drawGeoJson(coordinates) {
     const coordinatesT = [];
-    coordinates.forEach(c => coordinatesT.push(transform(c, 'EPSG:4326', this.mapEPSG)));
+    coordinates.forEach(c => coordinatesT.push(ol.transform(c, 'EPSG:4326', this.mapEPSG)));
     const geojsonObject = {
       'type': 'FeatureCollection',
       'features': [{
@@ -209,15 +195,15 @@ export class MapComponent implements OnInit {
     };
     this.vectorSource.clear();
     this.vectorSource.addFeatures(
-      (new GeoJSON()).readFeatures(geojsonObject)
+      (new ol.GeoJSON()).readFeatures(geojsonObject)
     );
   }
   drawPolyline(polyline) {
     console.log(polyline);
-    const route = (new Polyline({
+    const route = (new ol.Polyline({
       factor: 1e6
     }).readGeometry(polyline, {}));
-    const routeFeature = new Feature({
+    const routeFeature = new ol.Feature({
       type: 'route',
       geometry: route
     });
@@ -228,12 +214,12 @@ export class MapComponent implements OnInit {
   }
 
   addInteractions() {
-    this.intrDraw = new Draw({
+    this.intrDraw = new ol.Draw({
       source: this.vectorSource,
       type: this.selectDrawKey
     });
     this.map.addInteraction(this.intrDraw);
-    this.intrSnap = new Snap({source: this.vectorSource, pixelTolerance: 8});
+    this.intrSnap = new ol.Snap({source: this.vectorSource, pixelTolerance: 8});
     this.map.addInteraction(this.intrSnap);
   }
 

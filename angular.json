@@ -3,17 +3,17 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "UEditor": {
+    "UEditorMaterial": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
       "schematics": {},
-      "architect": {
+      "targets": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist/UEditorMaterial",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -23,7 +23,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              { "input": "src/styles/styles-app-loading.scss" },
+              { "input": "src/styles/styles.scss" }
             ],
             "scripts": []
           },
@@ -50,18 +51,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "UEditor:build"
+            "browserTarget": "UEditorMaterial:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "UEditor:build:production"
+              "browserTarget": "UEditorMaterial:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "UEditor:build"
+            "browserTarget": "UEditorMaterial:build"
           }
         },
         "test": {
@@ -72,7 +73,7 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": [
-              "src/styles.css"
+              "src/styles/styles.scss"
             ],
             "scripts": [],
             "assets": [
@@ -95,19 +96,19 @@
         }
       }
     },
-    "UEditor-e2e": {
+    "UEditorMaterial-e2e": {
       "root": "e2e/",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "UEditor:serve"
+            "devServerTarget": "UEditorMaterial:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "UEditor:serve:production"
+              "devServerTarget": "UEditorMaterial:serve:production"
             }
           }
         },
@@ -123,5 +124,5 @@
       }
     }
   },
-  "defaultProject": "UEditor"
+  "defaultProject": "UEditorMaterial"
 }

@@ -1,23 +1,27 @@
 import {HTTPServer} from './httpServer';
-import {userRouter, UserWSRouter} from './routes/userRouter';
+import {UserWSRouter} from './routes/userWsRouter';
+import {UserHttpRouter} from './routes/userHttpRouter';
 import {Database} from './database';
 import {ISequelizeConfig} from 'sequelize-typescript';
 import {User} from './models/user.model';
 import {RightType} from './models/right-types.model';
 import {WebSocketServer} from './webSocketServer';
+import {Utils} from './utils';
 
-// HTTP Server
-const httpServer = new HTTPServer('localhost', 3001);
+// HTTP Server1
+const httpServer = new HTTPServer('localhost', 8080);
+
+// Web Socket Server
+const webSocketServer = new WebSocketServer(httpServer);
+webSocketServer.routes.push(new UserWSRouter(webSocketServer));
+
+// HTTP Server2
 httpServer.express.get('/', (req, res) => {
   res.render('index', {title: 'HTTPServer'});
 });
-httpServer.express.use('/api/users/', userRouter);
+httpServer.express.use('/api/users/', new UserHttpRouter(webSocketServer).getRouter());
 httpServer.setErrorRoutes();
 httpServer.run();
-
-// Web Socket Server
-const webSocketServer = new WebSocketServer(8080);
-const userWSRouter = new UserWSRouter(webSocketServer);
 
 // Database
 class DBConfig implements ISequelizeConfig {
@@ -34,20 +38,9 @@ class DBConfig implements ISequelizeConfig {
 const database = new Database(new DBConfig());
 database.addModels([RightType, User]);
 
-const sync = true;
-function randomComment() {
-  let text = '';
-  const possible = ' ABCDEFGHIJKLMNOPQRSTUVWXY Zabcdefghijklmnopqrstuvwxyz 0123456789';
-
-  for (let i = 0; i < Math.random() * 1000; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-
-  return text;
-}
-
-if (sync) {
-  const usersCount = 100;
+const reCreateData = true;
+if (reCreateData) {
+  const usersCount = 500;
   database.sync({force: true})
           .then(() => {
             console.log('Connection synced!');
@@ -60,7 +53,7 @@ if (sync) {
                 name: `Tom${i}`,
                 secret: '12345',
                 email: `tom${i}@mail.net`,
-                comment: randomComment()
+                comment: Utils.randomComment()
               }).save();
             }
           })
